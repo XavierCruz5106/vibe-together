@@ -1,0 +1,7 @@
+Vibe Together
+
+Db stores user token. Lookup user token and query api/me for current tracks?
+
+no clue may have to login for that. 
+
+workaround: spotify-buddylist

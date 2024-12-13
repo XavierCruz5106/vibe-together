@@ -1,10 +1,10 @@
 const clientId = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID;
-const client_secret = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_SECRET;
+const clientSecret = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_SECRET;
 const redirectUri = `${process.env.NEXT_PUBLIC_BASE_URL}/callback`;
 
 export function getSpotifyAuthURL() {
   console.log(clientId);
-  console.log(client_secret);
+  console.log(clientSecret);
 
   if (!clientId) {
     throw new Error("Spotify client ID is missing.");
@@ -32,7 +32,7 @@ export async function getAccessToken(code: string) {
       "Content-Type": "application/x-www-form-urlencoded",
       Authorization:
         "Basic " +
-        Buffer.from(redirectUri + ":" + client_secret).toString("base64"),
+        Buffer.from(clientId + ":" + clientSecret).toString("base64"), // Correct this part
     },
     body: new URLSearchParams({
       grant_type: "authorization_code",

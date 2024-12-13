@@ -2,8 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { getCurrentlyPlaying } from "@/lib/spotify";
+import Image from "next/image";
 
 interface ClientComponentProps {
+  // WILL FIX THIS LATER!!!!
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   currentlyPlaying: any;
   accessToken: string;
 }
@@ -14,12 +17,12 @@ export default function ClientComponent({
 }: ClientComponentProps) {
   const [currentTrack, setCurrentTrack] = useState(currentlyPlaying);
 
-  const fetchCurrentlyPlaying = async () => {
-    const data = await getCurrentlyPlaying(accessToken);
-    setCurrentTrack(data);
-  };
-
   useEffect(() => {
+    const fetchCurrentlyPlaying = async () => {
+      const data = await getCurrentlyPlaying(accessToken);
+      setCurrentTrack(data);
+    };
+
     const intervalId = setInterval(fetchCurrentlyPlaying, 5000);
 
     return () => clearInterval(intervalId); // Clean up interval on unmount
@@ -32,7 +35,7 @@ export default function ClientComponent({
           <h2 className="text-2xl font-semibold mb-2 text-center">
             Currently Playing
           </h2>
-          <img
+          <Image
             className="w-64 h-64 mx-auto mb-4 rounded-lg shadow-md"
             src={currentTrack.item.album.images[0].url}
             alt="cover"

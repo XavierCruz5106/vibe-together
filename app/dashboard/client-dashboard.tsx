@@ -36,8 +36,10 @@ export default function ClientComponent({
             Currently Playing
           </h2>
           <Image
-            className="w-64 h-64 mx-auto mb-4 rounded-lg shadow-md"
+            className="mx-auto mb-4 rounded-lg shadow-md"
             src={currentTrack.item.album.images[0].url}
+            width={currentTrack.item.album.images[0].width / 2}
+            height={currentTrack.item.album.images[0].height / 2}
             alt="cover"
           />
           <p className="text-xl text-center">

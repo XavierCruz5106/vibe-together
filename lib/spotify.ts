@@ -1,6 +1,6 @@
 const clientId = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID;
 const clientSecret = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_SECRET;
-const redirectUri = `${process.env.NEXT_PUBLIC_BASE_URL}/callback`;
+const redirectUri = `${process.env.NEXT_PUBLIC_BASE_URL}/api/callback`;
 
 export function getSpotifyAuthURL() {
   console.log(clientId);

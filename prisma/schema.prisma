@@ -11,6 +11,7 @@ generator client {
 model User {
   id                    Int          @id @default(autoincrement())
   spotify_uri           String       @unique
+  userId                String       @unique
   spotify_access_token  String
   spotify_refresh_token String
   created_at            DateTime     @default(now())
@@ -21,10 +22,9 @@ model User {
 
 model Friendship {
   id        Int      @id @default(autoincrement())
-  userId    Int
-  friendId  Int
+  userId    String
+  friendId  String
   createdAt DateTime @default(now())
-
-  user      User @relation("UserFriendship", fields: [userId], references: [id])
-  friend    User @relation("FriendUser", fields: [friendId], references: [id])
+  user      User @relation("UserFriendship", fields: [userId], references: [userId])
+  friend    User @relation("FriendUser", fields: [friendId], references: [userId])
 }

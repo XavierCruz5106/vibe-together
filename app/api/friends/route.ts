@@ -16,10 +16,8 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Ensure userId is converted to a number
-    const userIdNum = Number(userId);
 
-    console.log("Searching for friendships for user ID:", userIdNum);
+    console.log("Searching for friendships for user ID:", userId);
 
     // First, verify if the user exists
     const userExists = await prisma.user.findUnique({
@@ -37,7 +35,7 @@ export async function GET(request: NextRequest) {
     // Check for existing friendships
     const friends = await prisma.friendship.findMany({
       where: {
-        OR: [{ userId: userIdNum }, { friendId: userIdNum }],
+        OR: [{ userId: userId }, { friendId: userId }],
       },
       include: {
         user: true,
@@ -54,7 +52,7 @@ export async function GET(request: NextRequest) {
     }
 
     const friendList = friends.map((friendship) =>
-      friendship.userId === userIdNum ? friendship.friend : friendship.user
+      friendship.userId === userId ? friendship.friend : friendship.user
     );
 
     console.log("Processed Friend List:", friendList);
@@ -101,8 +99,8 @@ export async function POST(request: NextRequest) {
     const existingFriendship = await prisma.friendship.findFirst({
       where: {
         OR: [
-          { userId: Number(userId), friendId: Number(friendId) },
-          { userId: Number(friendId), friendId: Number(userId) },
+          { userId: userId, friendId: friendId },
+          { userId: friendId, friendId: userId },
         ],
       },
     });
@@ -117,8 +115,8 @@ export async function POST(request: NextRequest) {
     // Create new friendship
     const newFriendship = await prisma.friendship.create({
       data: {
-        userId: Number(userId),
-        friendId: Number(friendId),
+        userId: userId,
+        friendId: friendId,
       },
     });
 

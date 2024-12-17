@@ -27,25 +27,23 @@ export async function GET(request: NextRequest) {
     const { access_token, refresh_token } = tokenResponse;
     const user = await getUserProfile(access_token);
 
+    console.log("REFRESH: " + refresh_token)
     console.log("Spotify User Profile:", user);
 
     // Upsert user in database
-    const upsertedUser = await prisma.user.upsert({
-      where: { spotify_uri: `spotify:user:${user.id}` },
-      update: {
-        // Add any other fields you want to update
-        spotify_access_token: access_token,
-        spotify_refresh_token: refresh_token,
-      },
-      create: {
-        spotify_uri: `spotify:user:${user.id}`,
-        spotify_access_token: access_token,
-        spotify_refresh_token: refresh_token,
-        // Add any other initial fields
-      },
-    });
+    const userExist = await prisma.user.findFirst({ where: { spotify_uri: user.uri } })
+    if (userExist === null) {
+        await prisma.user.create({
+          data: {
+            spotify_uri: user.uri,
+            userId: user.id,
+            spotify_access_token: access_token,
+            spotify_refresh_token: refresh_token
+          }
+        })
+    } else {
 
-    console.log("Upserted User:", upsertedUser);
+    }
 
     const response = NextResponse.redirect(new URL("/dashboard", request.url));
 
@@ -64,7 +62,7 @@ export async function GET(request: NextRequest) {
       path: "/",
     });
 
-    response.cookies.set("user_id", upsertedUser.id.toString(), {
+    response.cookies.set("user_id", user.id.toString(), {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",

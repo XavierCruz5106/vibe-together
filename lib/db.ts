@@ -1,19 +1,14 @@
-import { PrismaClient } from "@prisma/client";
-import { createClient } from "@libsql/client";
-import { PrismaLibSQL } from "@prisma/adapter-libsql";
+import { PrismaClient } from '@prisma/client'
+import { PrismaLibSQL } from '@prisma/adapter-libsql'
+import { createClient } from '@libsql/client'
 
-// Initialize the Turso (LibSQL) client
-const tursoClient = createClient({
-  url: process.env.DATABASE_URL as string, // Turso connection string
-  authToken: process.env.AUTH_TOKEN as string,
-});
+const libsql = createClient({
+  url: `${process.env.DATABASE_URL}`,
+  authToken: `${process.env.AUTH_TOKEN}`,
+})
 
-// Use the LibSQL adapter
-const adapter = new PrismaLibSQL(tursoClient);
+const adapter = new PrismaLibSQL(libsql)
 
-// Workaround for PrismaClient to accept the 'adapter' property
-const prisma = new (PrismaClient as unknown as new (options: any) => PrismaClient)({
-  adapter, // Add the LibSQL adapter
-});
+const prisma = new PrismaClient({adapter})
 
-export default prisma;
+export default prisma

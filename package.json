@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@ai-sdk/openai": "^1.0.8",
+    "@libsql/client": "^0.8.1",
+    "@prisma/adapter-libsql": "^6.0.1",
     "@prisma/client": "^6.0.1",
     "@radix-ui/react-slot": "^1.1.0",
     "ai": "^4.0.16",

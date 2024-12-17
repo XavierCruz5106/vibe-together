@@ -1,6 +1,6 @@
 datasource db {
   provider = "sqlite"
-  url      = "file:./dev.db" // This specifies the SQLite database file
+  url      = "file:./db.ts" // Use Turso connection string
 }
 
 generator client {

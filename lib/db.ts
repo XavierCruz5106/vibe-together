@@ -15,7 +15,7 @@ const prisma = new PrismaClient({
       url: process.env.DATABASE_URL,
     },
   },
-  // @ts-ignore
+  // @ts-expect-error - Prisma doesnt natively support adapter yet
   adapter,
 })
 

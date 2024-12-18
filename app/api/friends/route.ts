@@ -44,12 +44,14 @@ export async function GET(request: NextRequest) {
         ? {
             id: friendship.friend.id,
             userId: friendship.friend.userId,
+            displayName: friendship.friend.displayName,
             spotify_access_token: friendship.friend.spotify_access_token,
             spotify_refresh_token: friendship.friend.spotify_refresh_token
           }
         : {
             id: friendship.user.id,
             userId: friendship.user.userId,
+            displayName: friendship.user.displayName,
             spotify_access_token: friendship.user.spotify_access_token,
             spotify_refresh_token: friendship.user.spotify_refresh_token
           }

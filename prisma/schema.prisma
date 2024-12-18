@@ -12,6 +12,7 @@ model User {
   id                    Int          @id @default(autoincrement())
   spotify_uri           String       @unique
   userId                String       @unique
+  displayName           String
   spotify_access_token  String
   spotify_refresh_token String
   created_at            DateTime     @default(now())

@@ -37,12 +37,11 @@ export async function GET(request: NextRequest) {
           data: {
             spotify_uri: user.uri,
             userId: user.id,
+            displayName: user.display_name,
             spotify_access_token: access_token,
             spotify_refresh_token: refresh_token
           }
         })
-    } else {
-
     }
 
     const response = NextResponse.redirect(new URL("/dashboard", request.url));

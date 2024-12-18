@@ -1,25 +1,34 @@
-import prisma from "@/lib/db";
 import { NextResponse } from "next/server";
+import prisma from "@/lib/db";
 
-// In a separate route file, perhaps /api/users/route.ts
-export async function GET() {
+export async function PATCH(req: Request) {
+  const {spotify_access_token, userId} = await req.json();
+
+  // Build the update object only with provided fields
+  const updateData: Record<string, any> = {};
+
+  if (spotify_access_token) {
+    updateData.spotify_access_token = spotify_access_token;
+  }
+
+  // You can add more fields here as needed
+
   try {
-    const users = await prisma.user.findMany({
-      select: {
-        id: true,
-        spotify_uri: true,
-        // Add other fields you want to see
-      },
+    // Update user data in the database
+    const updatedUser = await prisma.user.update({
+      where: { userId: userId },
+      data: updateData,
     });
 
+    // Return the updated user
     return NextResponse.json({
-      count: users.length,
-      users: users,
+      message: "User updated successfully",
+      user: updatedUser,
     });
   } catch (error) {
-    console.error("Error fetching users:", error);
+    console.error("Error updating user:", error);
     return NextResponse.json(
-      { error: "Failed to fetch users" },
+      { error: "Failed to update user" },
       { status: 500 }
     );
   }

@@ -19,12 +19,10 @@ export default function Connect() {
     }
 
     try {
-      // Prepend 'spotify:user:' to the entered value
-      const formattedURI = `spotify:user:${friendSpotifyURI}`;
 
       // Send the POST request to add the friend
       const response = await axios.post("/api/friends", {
-        spotifyURI: formattedURI,
+        friendId: friendSpotifyURI,
       });
 
       if (response.status === 200) {

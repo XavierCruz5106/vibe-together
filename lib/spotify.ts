@@ -75,6 +75,7 @@ export async function getUserProfile(access_token: string) {
       Authorization: `Bearer ${access_token}`,
     },
   });
+  console.log(response)
 
   return response.json();
 }

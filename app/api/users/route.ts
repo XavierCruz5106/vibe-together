@@ -5,7 +5,7 @@ export async function PATCH(req: Request) {
   const {spotify_access_token, userId} = await req.json();
 
   // Build the update object only with provided fields
-  const updateData: Record<string, any> = {};
+  const updateData: Record<string, unknown> = {};
 
   if (spotify_access_token) {
     updateData.spotify_access_token = spotify_access_token;

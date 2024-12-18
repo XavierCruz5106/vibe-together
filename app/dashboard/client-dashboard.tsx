@@ -1,10 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getCurrentlyPlaying, refreshSpotifyToken } from "@/lib/spotify";
 import Image from "next/image";
-import prisma from "@/lib/db";
-import { getSpotifyRefreshToken } from "../cookieStuff";
 
 interface ClientComponentProps {
   // WILL FIX THIS LATER!!!!
@@ -22,6 +20,7 @@ export default function ClientComponent({
   refreshToken,
 }: ClientComponentProps) {
   const [currentTrack, setCurrentTrack] = useState(currentlyPlaying);
+  const accessTokenRef = useRef(accessToken); // Use useRef to store mutable token
 
   useEffect(() => {
     const fetchCurrentlyPlaying = async () => {
@@ -29,12 +28,13 @@ export default function ClientComponent({
       let data = await getCurrentlyPlaying(accessToken);
       if (data === null){
         console.log("nothing playing")
+        return null;
       }
 
       if (data.error && data.error.status === 401) {
         console.log("Token Expired... Refreshing");
         const newAccessToken = await refreshSpotifyToken(refreshToken);
-        accessToken = newAccessToken;
+        accessTokenRef.current = newAccessToken;
         data = await getCurrentlyPlaying(newAccessToken); // Use the refreshed token
       }
       setCurrentTrack(data);

@@ -70,7 +70,7 @@ export async function refreshSpotifyToken(refreshToken: string) {
     );
 
     if (response.status === 200) {
-      const { access_token, expires_in } = response.data;
+      const { access_token } = response.data;
 
       await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/users`, {
         method: "PATCH",
@@ -118,7 +118,7 @@ export async function refreshFriendSpotifyToken(refreshToken: string, userId: st
     );
 
     if (response.status === 200) {
-      const { access_token, expires_in } = response.data;
+      const { access_token } = response.data;
 
       await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/users`, {
         method: "PATCH",

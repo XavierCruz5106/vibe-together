@@ -1,11 +1,12 @@
 'use client'
-import { fetchFriendsWithTracks, getCurrentlyPlaying, refreshSpotifyToken } from "@/lib/spotify";
+import { fetchFriendsWithTracks, getCurrentlyPlaying } from "@/lib/spotify";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import ClientComponent from "./client-dashboard";
 import FriendModal from "@/components/FriendModal";
 import { getSpotifyAccessToken, getSpotifyRefreshToken, getUserId } from "../cookieStuff";
 import { useEffect, useState } from "react";
+import Friend from "@/types/Friend";
 
 // Async function to fetch the currently playing track
 async function fetchCurrentlyPlaying(accessToken: string) {
@@ -14,8 +15,8 @@ async function fetchCurrentlyPlaying(accessToken: string) {
 }
 
 export default function Dashboard() {
-  const [currentlyPlaying, setCurrentlyPlaying] = useState<any>(null);
-  const [friendsWithTracks, setFriendsWithTracks] = useState<any[]>([]);
+  const [currentlyPlaying, setCurrentlyPlaying] = useState<unknown>(null);
+  const [friendsWithTracks, setFriendsWithTracks] = useState<Friend[]>([]);
   const [spotifyStuffs, setSpotifyStuffs] = useState({
     accessToken: "",
     userId: "",
@@ -41,9 +42,10 @@ export default function Dashboard() {
 
   // Use effect to set up polling for currently playing track and friends' tracks
   useEffect(() => {
+    populateData();
     const fetchAndUpdateCurrentlyPlaying = async () => {
       try {
-        let data = await fetchCurrentlyPlaying(spotifyStuffs.accessToken);
+        const data = await fetchCurrentlyPlaying(spotifyStuffs.accessToken);
         setCurrentlyPlaying(data);
       } catch (error) {
         console.error("Error fetching currently playing track:", error);
@@ -68,7 +70,6 @@ export default function Dashboard() {
       fetchAndUpdateFriendsData();
     }, 15000); // Polling friends every 15 seconds to reduce unnecessary API calls
 
-    populateData();
     // Fetch initial data for friends and currently playing track
     fetchAndUpdateCurrentlyPlaying();
     fetchAndUpdateFriendsData();
@@ -78,17 +79,7 @@ export default function Dashboard() {
       clearInterval(currentlyPlayingIntervalId);
       clearInterval(friendsIntervalId);
     };
-  }, []);
-
-  // Handle the scenario when the track is 401 (token expired) and refresh it
-  const handleTokenRefresh = async () => {
-    try {
-      const newAccessToken = await refreshSpotifyToken(spotifyStuffs.refreshToken);
-      setCurrentlyPlaying(await fetchCurrentlyPlaying(newAccessToken));
-    } catch (error) {
-      console.error("Error refreshing token:", error);
-    }
-  };
+  }, [spotifyStuffs.accessToken]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-400 to-blue-500 p-8">
@@ -112,7 +103,7 @@ export default function Dashboard() {
             <Button asChild>
               <Link
                 href="/connect"
-                className="bg-blue-500 text-white px-4 py-2 rounded"
+                className="bg-blue-500 text-white xpx-4 py-2 rounded"
               >
                 Connect with Friends
               </Link>

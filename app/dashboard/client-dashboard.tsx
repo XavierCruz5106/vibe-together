@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { getCurrentlyPlaying } from "@/lib/spotify";
+import { useEffect, useRef, useState } from "react";
+import { getCurrentlyPlaying, refreshSpotifyToken } from "@/lib/spotify";
 import Image from "next/image";
 
 interface ClientComponentProps {
@@ -9,24 +9,41 @@ interface ClientComponentProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   currentlyPlaying: any;
   accessToken: string;
+  userId: string;
+  refreshToken: string;
 }
 
 export default function ClientComponent({
   currentlyPlaying,
   accessToken,
+  userId,
+  refreshToken,
 }: ClientComponentProps) {
   const [currentTrack, setCurrentTrack] = useState(currentlyPlaying);
+  const accessTokenRef = useRef(accessToken); // Use useRef to store mutable token
 
   useEffect(() => {
     const fetchCurrentlyPlaying = async () => {
-      const data = await getCurrentlyPlaying(accessToken);
+
+      let data = await getCurrentlyPlaying(accessToken);
+      if (data === null){
+        console.log("nothing playing")
+        return null;
+      }
+
+      if (data.error && data.error.status === 401) {
+        console.log("Token Expired... Refreshing");
+        const newAccessToken = await refreshSpotifyToken(refreshToken);
+        accessTokenRef.current = newAccessToken;
+        data = await getCurrentlyPlaying(newAccessToken); // Use the refreshed token
+      }
       setCurrentTrack(data);
     };
 
-    const intervalId = setInterval(fetchCurrentlyPlaying, 5000);
+    const intervalId = setInterval(fetchCurrentlyPlaying, 15000);
 
-    return () => clearInterval(intervalId); // Clean up interval on unmount
-  }, [accessToken]);
+    return () => clearInterval(intervalId); // Clean up interval on unmoun
+  }, [accessToken, userId, refreshToken]); // Adding userId as dependency
 
   return (
     <div>

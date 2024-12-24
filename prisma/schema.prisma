@@ -1,0 +1,31 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./db.db" // Use Turso connection string
+}
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+model User {
+  id                    Int          @id @default(autoincrement())
+  spotify_uri           String       @unique
+  userId                String       @unique
+  displayName           String
+  spotify_access_token  String
+  spotify_refresh_token String
+  created_at            DateTime     @default(now())
+  updated_at            DateTime     @updatedAt
+  friendships           Friendship[] @relation("UserFriendship")
+  receivedFriendships   Friendship[] @relation("FriendUser")
+}
+
+model Friendship {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  friendId  String
+  createdAt DateTime @default(now())
+  user      User @relation("UserFriendship", fields: [userId], references: [userId])
+  friend    User @relation("FriendUser", fields: [friendId], references: [userId])
+}
